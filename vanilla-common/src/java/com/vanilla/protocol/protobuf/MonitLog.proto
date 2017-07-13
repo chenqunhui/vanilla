@@ -1,0 +1,14 @@
+package push;
+
+option java_package="com.vanilla.protocol.protobuf";
+option java_outer_classname ="MonitLogProto";
+
+message MonitLog{
+	required string msgId =1;
+	required string level=2;
+	required string loggerName=3;
+	required string localAddress=4;
+	required sint64 timestamp=5;
+	optional string threadName=6;
+	optional string msg =7;
+}

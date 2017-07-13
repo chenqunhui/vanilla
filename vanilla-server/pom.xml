@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.vanilla</groupId>
+		<artifactId>vanilla</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>vanilla-server</artifactId>
+	<packaging>jar</packaging>
+	<name>vanilla-server</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<spring.version>3.2.10.RELEASE</spring.version>
+		<junit.version>4.12</junit.version>
+		<aspectjweaver.version>1.6.8</aspectjweaver.version>
+		<gson.version>2.3</gson.version>
+		<!-- <zookeeper.version>3.4.6</zookeeper.version> -->
+		<netty.version>4.0.28.Final</netty.version>
+	</properties>
+
+<!-- 	<build>
+		<finalName>push-server</finalName>
+		<plugins>
+			服务端不发布到仓库
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build> -->
+
+	<dependencies>
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- srping end -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectjweaver.version}</version>
+		</dependency>
+		<!-- 单元测试 -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+		<!-- 单元测试 end -->
+		<dependency>
+			<groupId>joda-time</groupId>
+			<artifactId>joda-time</artifactId>
+			<version>2.3</version>
+		</dependency>
+<!-- 		<dependency> -->
+		<dependency>
+		  <groupId>com.google.code.gson</groupId>
+		  <artifactId>gson</artifactId>
+		  <version>${gson.version}</version>
+		</dependency>
+		<!-- zookeeper -->
+		<!-- <dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>${zookeeper.version}</version>
+		</dependency> -->
+		<dependency>
+		  <groupId>com.github.sgroschupf</groupId>
+		  <artifactId>zkclient</artifactId>
+		  <version>0.1</version>
+		  <exclusions>
+		  	<exclusion>
+		  		<artifactId>log4j</artifactId>
+		  		<groupId>log4j</groupId>
+		  	</exclusion>
+		  </exclusions>
+		</dependency>
+		<dependency>
+		  <groupId>io.netty</groupId>
+		  <artifactId>netty-codec</artifactId>
+		  <version>${netty.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>io.netty</groupId>
+		  <artifactId>netty-handler</artifactId>
+		  <version>${netty.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.google.protobuf</groupId>
+		  <artifactId>protobuf-java</artifactId>
+		  <version>2.5.0</version>
+		</dependency>
+		<dependency>
+		  <groupId>log4j</groupId>
+		  <artifactId>log4j</artifactId>
+		  <version>1.2.17</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.vanilla</groupId>
+		  <artifactId>vanilla-common</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+</project>
