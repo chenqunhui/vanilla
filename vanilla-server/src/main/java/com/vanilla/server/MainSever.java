@@ -27,16 +27,22 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.bytes.ByteArrayDecoder;
+import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
+import io.netty.handler.codec.string.StringDecoder;
 /*import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import io.netty.util.CharsetUtil;*/
 import io.netty.handler.timeout.IdleStateHandler;
+import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -87,17 +93,18 @@ public class MainSever {
 						public void initChannel(SocketChannel ch) throws Exception {
 							ChannelPipeline pipeline = ch.pipeline();
 							pipeline.addLast("connect",new ConnectHandler());
-							//pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-							//pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
-							pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
+							pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+							pipeline.addLast("byteDecoder",new ByteArrayDecoder());
+							/*pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
 							pipeline.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
 							pipeline.addLast("protobufDecoder",new ProtobufDecoder(PushMessageProto.PushMessage.getDefaultInstance()));
-							pipeline.addLast("protobufEncoder",new ProtobufEncoder());
+							pipeline.addLast("protobufEncoder",new ProtobufEncoder());*/
+							pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
+							pipeline.addLast("byteEncoder",new ByteArrayEncoder());
 							//pipeline.addLast("stringDecoder", new StringDecoder(CharsetUtil.UTF_8));
 							//pipeline.addLast("msgDecoder", new MessageDecoder());
 							//pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
 							//pipeline.addLast("msgEecoder", new MessageEncoder());
-							
 							//设置心跳读写超时时间
 							pipeline.addLast("pong", new IdleStateHandler(0, 0, config.getTickTime(),TimeUnit.MILLISECONDS));
 							pipeline.addLast(new ServerHeartbeatListener(config));
@@ -105,7 +112,7 @@ public class MainSever {
 							pipeline.addLast("handler" ,new ServerTranferHandler());
 						}
 					});
-			ChannelFuture f = boot.bind(config.getPort());
+			ChannelFuture f = boot.bind(conf.getPort());
 			//f.addListener((GenericFutureListener<? extends Future<? super Void>>) new ServerFutureListener());
 			isStarted = true;
 			logger.info("push sever start success,listen on port "+conf.getPort());

@@ -1,20 +1,21 @@
-package com.vanilla.server.config;
+package com.vanilla.boot.netty.conf;
 
-public class ServerConfig {
 
+public class NettyServerConfig {
 	private int port;   //服务启动端口
 	private int bossGroup;
 	private int workerGroup;
 	private long tickTime;  //服务端心跳时间
 	private int maxDelayCount; //心跳超时次数
 
-	public ServerConfig defaultConfig(){
-		port=21881;
-		bossGroup = 2;
-		workerGroup = 2;
-		tickTime = 30*1000;
-		maxDelayCount = 5;
-		return this;
+	public static NettyServerConfig defaultConfig(){
+		NettyServerConfig conf = new NettyServerConfig();
+		conf.port=21881;
+		conf.bossGroup = 2;
+		conf.workerGroup = 2;
+		conf.tickTime = 30*1000;
+		conf.maxDelayCount = 5;
+		return conf;
 	}
 
 	public int getPort() {
@@ -41,7 +42,6 @@ public class ServerConfig {
 		this.workerGroup = workerGroup;
 	}
 
-
 	public long getTickTime() {
 		return tickTime;
 	}
@@ -57,5 +57,4 @@ public class ServerConfig {
 	public void setMaxDelayCount(int maxDelayCount) {
 		this.maxDelayCount = maxDelayCount;
 	}
-
 }

@@ -12,6 +12,10 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.bytes.ByteArrayDecoder;
+import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
@@ -58,10 +62,14 @@ public class RenameChannelManager implements Task{
 			@Override
 			protected void initChannel(Channel ch) throws Exception {
 				ChannelPipeline pipeline = ch.pipeline();
-				pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
+				/*pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
 				pipeline.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
 				pipeline.addLast("protobufDecoder",new ProtobufDecoder(PushMessageProto.PushMessage.getDefaultInstance()));
-				pipeline.addLast("protobufEncoder",new ProtobufEncoder());
+				pipeline.addLast("protobufEncoder",new ProtobufEncoder());*/
+				pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+				pipeline.addLast("byteDecoder",new ByteArrayDecoder());
+				pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
+				pipeline.addLast("byteEncoder",new ByteArrayEncoder());
 				pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, 5,TimeUnit.SECONDS));
 				//TODO pipeline.addLast(new ClientHeartbeatHandler(vanillaPush.config));
 			}
