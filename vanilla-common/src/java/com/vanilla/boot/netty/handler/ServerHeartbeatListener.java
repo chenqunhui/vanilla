@@ -60,14 +60,16 @@ public class ServerHeartbeatListener extends ChannelInboundHandlerAdapter {
 	
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		String message = (String)msg;
-		if(message.equals("ping")){
-			if(logger.isDebugEnabled()){
-				logger.debug("Heartbeat request from client "+ctx.channel().remoteAddress()+" : ping !");
+		if(msg instanceof String){
+			String message = (String)msg;
+			if(message.equals("ping")){
+				if(logger.isDebugEnabled()){
+					logger.debug("Heartbeat request from client "+ctx.channel().remoteAddress()+" : ping !");
+				}
+				loss_connect_time.decrementAndGet();
+				ctx.writeAndFlush("pong");
+				return;
 			}
-			loss_connect_time.decrementAndGet();
-			ctx.writeAndFlush("pong");
-			return;
 		}
 		ctx.fireChannelRead(msg);
     }

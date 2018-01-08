@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
+import com.vanilla.boot.netty.NettyTcpClient;
 import com.vanilla.boot.netty.conf.NettyClientConfig;
 import com.vanilla.protocol.MessageType;
 import com.vanilla.protocol.protobuf.PushMessageProto;
@@ -20,11 +21,14 @@ public class ClientHeartbeatHandler extends ChannelInboundHandlerAdapter {
 	private static Logger logger = Logger.getLogger(ClientHeartbeatHandler.class);
 	
     private  NettyClientConfig config;  
+    
+    private NettyTcpClient client;
       
     private AtomicInteger currentCount = new AtomicInteger(0);  
     
-    public ClientHeartbeatHandler(NettyClientConfig conf){
-    	this.config = conf;
+    public ClientHeartbeatHandler(NettyTcpClient client){
+    	this.config = client.getConfig();
+    	this.client = client;
     }
       
     @Override  
@@ -32,6 +36,7 @@ public class ClientHeartbeatHandler extends ChannelInboundHandlerAdapter {
     	if(logger.isDebugEnabled()){
     		logger.debug("connect is activity !");
     	}
+    	client.actived();
         ctx.fireChannelActive();  
     }  
   
@@ -41,6 +46,7 @@ public class ClientHeartbeatHandler extends ChannelInboundHandlerAdapter {
 			logger.debug("connect is inactivity !");
 		}
 		//channelManager.close();
+		client.inActived();
         ctx.fireChannelInactive();
     }  
   

@@ -30,7 +30,7 @@ import com.vanilla.boot.TcpServer;
 import com.vanilla.boot.netty.codec.HessianDecoder;
 import com.vanilla.boot.netty.codec.HessianEncoder;
 import com.vanilla.boot.netty.conf.NettyServerConfig;
-import com.vanilla.boot.netty.handler.NettyConnectHandler;
+import com.vanilla.boot.netty.handler.ServerNettyConnectHolder;
 import com.vanilla.boot.netty.handler.ServerHeartbeatListener;
 
 public  class NettyTcpServer implements TcpServer{
@@ -78,7 +78,7 @@ public  class NettyTcpServer implements TcpServer{
 						@Override
 						public void initChannel(SocketChannel ch) throws Exception {
 							ChannelPipeline pipeline = ch.pipeline();
-							pipeline.addLast("connect",new NettyConnectHandler());
+							pipeline.addLast("connect",new ServerNettyConnectHolder());
 							//Decoder
 							pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
 							pipeline.addLast("byteDecoder",new ByteArrayDecoder());

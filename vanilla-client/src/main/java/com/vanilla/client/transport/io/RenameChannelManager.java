@@ -1,5 +1,6 @@
 package com.vanilla.client.transport.io;
 
+import com.vanilla.client.heartbeat.ClientHeartbeatHandler;
 import com.vanilla.protocol.protobuf.PushMessageProto;
 import com.vanilla.transport.Task;
 
@@ -71,7 +72,7 @@ public class RenameChannelManager implements Task{
 				pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
 				pipeline.addLast("byteEncoder",new ByteArrayEncoder());
 				pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, 5,TimeUnit.SECONDS));
-				//TODO pipeline.addLast(new ClientHeartbeatHandler(vanillaPush.config));
+//				pipeline.addLast(new ClientHeartbeatHandler(vanillaPush.config));
 			}
 		});
 		m_bootstrap = bootstrap;

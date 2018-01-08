@@ -11,7 +11,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.vanilla.protocol.protobuf.PushMessageProto;
 import com.vanilla.server.config.ServerConfig;
 import com.vanilla.server.heartbeat.ServerHeartbeatListener;
-import com.vanilla.server.listener.ServerFutureListener;
 import com.vanilla.server.moniter.TcpReceiver;
 import com.vanilla.server.transport.ConnectHandler;
 import com.vanilla.server.transport.ServerTranferHandler;

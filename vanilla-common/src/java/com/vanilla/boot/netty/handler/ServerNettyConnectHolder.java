@@ -6,7 +6,12 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class NettyConnectHandler extends ChannelInboundHandlerAdapter{
+/**
+ * 链接持有者
+ * @author chenqunhui
+ *
+ */
+public class ServerNettyConnectHolder extends ChannelInboundHandlerAdapter{
 
 	/**
 	 * 存储链接信息

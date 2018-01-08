@@ -1,5 +1,6 @@
 package com.vanilla.boot;
 
+
 public interface TcpClient {
 
 	void init();
@@ -7,4 +8,6 @@ public interface TcpClient {
 	void connect();
 	
 	void close();
+	
+	void send(Object msg);
 }

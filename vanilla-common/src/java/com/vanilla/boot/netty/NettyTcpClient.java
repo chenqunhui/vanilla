@@ -21,6 +21,7 @@ import io.netty.util.CharsetUtil;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
@@ -30,7 +31,9 @@ import com.vanilla.boot.TcpClient;
 import com.vanilla.boot.netty.codec.HessianDecoder;
 import com.vanilla.boot.netty.codec.HessianEncoder;
 import com.vanilla.boot.netty.conf.NettyClientConfig;
+import com.vanilla.boot.netty.exception.UnConnectedException;
 import com.vanilla.boot.netty.handler.ClientHeartbeatHandler;
+import com.vanilla.boot.netty.handler.ServerNettyConnectHolder;
 
 public class NettyTcpClient implements TcpClient,Runnable {
 
@@ -40,6 +43,8 @@ public class NettyTcpClient implements TcpClient,Runnable {
 	
 	private NettyClientConfig conf;
 	
+	private CountDownLatch countDown = new CountDownLatch(1); //初始化锁
+	
 	private boolean isActive = false; //链接状态
 	
 	private boolean isShutdown = false;
@@ -48,10 +53,40 @@ public class NettyTcpClient implements TcpClient,Runnable {
 	
 	private FilterHandlerFactory  filterHandlerFactory;
 	
+	private ChannelFuture future;
+	//自动重连
+	private Thread thread = new Thread("NettyTcpClient-auto-reconnect-thread"){
+		public void run() {
+			while(true){
+				if(!isActive && !isShutdown){
+					logger.info("lost server " + conf.getHost()+":"+conf.getPort()+" for 10 senconds, reconnect it");
+					connect();
+				}
+				try {
+					Thread.sleep(10 * 1000L); // check every 10 seconds
+				} catch (InterruptedException e) {
+					// ignore
+				}
+			}
+		}
+	};
+	
+	//异步初始化
+	public void run() {
+		init();
+	}
+	
 	public NettyTcpClient(NettyClientConfig conf,HandlerFactory handlerFactory,FilterHandlerFactory  filterHandlerFactory){
 		this.conf = conf;
 		this.handlerFactory = handlerFactory;
 		this.filterHandlerFactory = filterHandlerFactory;
+		new Thread(this).start();//异步初始化
+		try {
+			countDown.await();
+			thread.start();//自动重连
+		} catch (InterruptedException e) {
+			//ignor
+		}
 	}
 	
 	public void init() {
@@ -84,7 +119,7 @@ public class NettyTcpClient implements TcpClient,Runnable {
 				//pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
 				
 				pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, 5,TimeUnit.SECONDS));
-				pipeline.addLast(new ClientHeartbeatHandler(conf));
+				pipeline.addLast(new ClientHeartbeatHandler(NettyTcpClient.this));
 				if(null != filterHandlerFactory && null != filterHandlerFactory.getFilters() && filterHandlerFactory.getFilters().size()>0){
 					List<ChannelInboundHandler> filters = filterHandlerFactory.getFilters();
 					for(int i=0;i<filters.size();i++){
@@ -96,46 +131,64 @@ public class NettyTcpClient implements TcpClient,Runnable {
 		});
 		m_bootstrap = bootstrap;
 		connect();
-		new Thread(this).start();
+		countDown.countDown();
+		try {
+			future.channel().closeFuture().sync();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void connect() {
-		ChannelFuture future = null ;
-		try {
-			future = m_bootstrap.connect(new InetSocketAddress(conf.getHost(),conf.getPort()));
-			future.awaitUninterruptibly(100, TimeUnit.MILLISECONDS); // 100 ms
-			if (!future.isSuccess()) {
-				System.err.println("Error when try connecting to " + conf.getHost()+":"+conf.getPort());
-				future.channel().close();
+		if(isActive){
+			return;
+		}
+		synchronized(this){
+			if(isActive){
 				return;
-			} 
-			isActive = true;
-			logger.info("Connected to  server at " + conf.getHost()+":"+conf.getPort()+"success !");
-		} catch (Throwable e) {
-			logger.error("Error when connect server " + conf.getHost()+":"+conf.getPort(), e);
-			if (future != null) {
-				future.channel().close();;
+			}
+			try {
+				future = m_bootstrap.connect(new InetSocketAddress(conf.getHost(),conf.getPort()));
+				future.awaitUninterruptibly(100, TimeUnit.MILLISECONDS); // 100 ms
+				if (!future.isSuccess()) {
+					System.err.println("Error when try connecting to " + conf.getHost()+":"+conf.getPort());
+					future.channel().close();
+					return;
+				} 
+				isActive = true;
+				logger.info("Connected to  server at " + conf.getHost()+":"+conf.getPort()+" success !");
+			} catch (Throwable e) {
+				logger.error("Error when connect server " + conf.getHost()+":"+conf.getPort(), e);
+				if (future != null) {
+					future.channel().close();;
+				}
 			}
 		}
-
+		
+	}
+	
+	
+	
+	public void send(Object msg) {
+		if(!isActive){
+			throw new UnConnectedException("lost connect to "+ conf.getHost()+":"+conf.getPort());
+		}
+		future.channel().write(msg);
 	}
 
 	public void close() {
 		isShutdown = true;
 	}
-
-	public void run() {
-		while(true){
-			if(!isActive && !isShutdown){
-				logger.info("lost server " + conf.getHost()+":"+conf.getPort()+" for 10 senconds, reconnect it");
-				connect();
-			}
-			try {
-				Thread.sleep(10 * 1000L); // check every 10 seconds
-			} catch (InterruptedException e) {
-				// ignore
-			}
-		}
+	
+	public void actived(){
+		isActive = true;
 	}
-
+	
+	public void inActived(){
+		isActive = false;
+	}
+	
+	public NettyClientConfig getConfig(){
+		return conf;
+	}
 }
