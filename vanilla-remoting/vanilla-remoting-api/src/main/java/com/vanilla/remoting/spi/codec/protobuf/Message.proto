@@ -1,0 +1,10 @@
+package push;
+
+option java_package="com.vanilla.remoting.spi.codec.protobuf";
+option java_outer_classname ="MessageProto";
+
+
+message Message{ 
+  required int32 type = 1;  
+  optional string content = 2;
+}

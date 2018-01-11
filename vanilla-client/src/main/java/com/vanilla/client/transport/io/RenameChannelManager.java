@@ -1,7 +1,6 @@
 package com.vanilla.client.transport.io;
 
 import com.vanilla.client.heartbeat.ClientHeartbeatHandler;
-import com.vanilla.protocol.protobuf.PushMessageProto;
 import com.vanilla.transport.Task;
 
 import io.netty.bootstrap.Bootstrap;

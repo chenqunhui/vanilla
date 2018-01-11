@@ -4,9 +4,9 @@ package com.vanilla.client.heartbeat;
 import org.apache.log4j.Logger;
 
 import com.vanilla.client.conf.ClientConfig;
-import com.vanilla.protocol.MessageType;
-import com.vanilla.protocol.protobuf.PushMessageProto;
 import com.vanilla.client.transport.ClientChannelManager;
+import com.vanilla.remoteing.netty.MessageType;
+import com.vanilla.remoteing.netty.codec.protobuf.PushMessageProto;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;

@@ -1,16 +1,17 @@
 package com.vanilla.push;
 
+import com.vanilla.remoteing.netty.HandlerFactory;
+import com.vanilla.remoteing.netty.NettyServer;
+import com.vanilla.remoteing.netty.config.NettyServerConfig;
+import com.vanilla.remoting.Server;
+
 import io.netty.channel.ChannelInboundHandler;
 
-import com.vanilla.boot.TcpServer;
-import com.vanilla.boot.netty.HandlerFactory;
-import com.vanilla.boot.netty.NettyTcpServer;
-import com.vanilla.boot.netty.conf.NettyServerConfig;
 
 public class PushServer {
 
 	public static void main(String[] args){
-		TcpServer  server = new NettyTcpServer(NettyServerConfig.defaultConfig(),new HandlerFactory(){
+		Server  server = new NettyServer(NettyServerConfig.defaultConfig(),new HandlerFactory(){
 			@Override
 			public ChannelInboundHandler getObject() {
 				return new PushClientHandler();

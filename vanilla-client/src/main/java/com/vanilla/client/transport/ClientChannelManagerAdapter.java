@@ -6,9 +6,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.vanilla.client.conf.ClientConfig;
-import com.vanilla.protocol.MessageType;
-import com.vanilla.protocol.protobuf.MonitLogProto;
-import com.vanilla.protocol.protobuf.PushMessageProto;
 import com.vanilla.moniter.beans.MonitLogJava;
 import com.vanilla.transport.ChannelHolder;
 import com.vanilla.utils.IpUtils;

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.math.BigDecimal;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -35,8 +36,9 @@ public class PushClientHandler extends ChannelInboundHandlerAdapter{
 	
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		System.out.println(this.hashCode()+"=======");
 		writer.write(msg.toString());
+		writer.write(System.getProperty("line.separator"));
+		writer.flush();
         ctx.fireChannelRead(msg);
     }
 	
