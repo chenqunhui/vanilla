@@ -3,6 +3,7 @@ package com.vanilla.remoteing.netty;
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
@@ -11,7 +12,11 @@ import org.apache.log4j.Logger;
 import com.vanilla.remoteing.netty.config.NettyClientConfig;
 import com.vanilla.remoteing.netty.handler.ClientHeartbeatHandler;
 import com.vanilla.remoting.Client;
+import com.vanilla.remoting.RemotingException;
 import com.vanilla.remoting.exception.UnConnectedException;
+import com.vanilla.remoting.exchange.Request;
+import com.vanilla.remoting.exchange.ResponseFuture;
+import com.vanilla.remoting.exchange.support.MyResponseFuture;
 import com.vanilla.remoting.spi.codec.hessian.HessianDecoder;
 import com.vanilla.remoting.spi.codec.hessian.HessianEncoder;
 
@@ -49,7 +54,7 @@ public class NettyClient implements Client,Runnable {
 	
 	private FilterHandlerFactory  filterHandlerFactory;
 	
-	private ChannelFuture future;
+	private Channel channel;
 	//自动重连
 	private Thread thread = new Thread("NettyTcpClient-auto-reconnect-thread"){
 		public void run() {
@@ -114,8 +119,8 @@ public class NettyClient implements Client,Runnable {
 				pipeline.addLast("hessianEncoder",new HessianEncoder());
 				//pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
 				
-				pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, 5,TimeUnit.SECONDS));
-				pipeline.addLast(new ClientHeartbeatHandler(NettyClient.this));
+				//pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, 5,TimeUnit.SECONDS));
+				//pipeline.addLast(new ClientHeartbeatHandler(NettyClient.this));
 				if(null != filterHandlerFactory && null != filterHandlerFactory.getFilters() && filterHandlerFactory.getFilters().size()>0){
 					List<ChannelInboundHandler> filters = filterHandlerFactory.getFilters();
 					for(int i=0;i<filters.size();i++){
@@ -129,7 +134,7 @@ public class NettyClient implements Client,Runnable {
 		connect();
 		countDown.countDown();
 		try {
-			future.channel().closeFuture().sync();
+			channel.closeFuture().sync();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -143,7 +148,9 @@ public class NettyClient implements Client,Runnable {
 			if(isActive){
 				return;
 			}
+			ChannelFuture future = null; 
 			try {
+				
 				future = m_bootstrap.connect(new InetSocketAddress(conf.getHost(),conf.getPort()));
 				future.awaitUninterruptibly(100, TimeUnit.MILLISECONDS); // 100 ms
 				if (!future.isSuccess()) {
@@ -152,6 +159,7 @@ public class NettyClient implements Client,Runnable {
 					return;
 				} 
 				isActive = true;
+				channel = future.channel();
 				logger.info("Connected to  server at " + conf.getHost()+":"+conf.getPort()+" success !");
 			} catch (Throwable e) {
 				logger.error("Error when connect server " + conf.getHost()+":"+conf.getPort(), e);
@@ -165,11 +173,12 @@ public class NettyClient implements Client,Runnable {
 	
 	
 	
-	public void send(Object msg) {
+	public ResponseFuture send(Object msg) {
 		if(!isActive){
 			throw new UnConnectedException("lost connect to "+ conf.getHost()+":"+conf.getPort());
 		}
-		future.channel().writeAndFlush(msg);
+		ChannelFuture cf= channel.writeAndFlush(msg);
+		return new MyResponseFuture((Request)msg, 300000);
 	}
 
 	public void close() {

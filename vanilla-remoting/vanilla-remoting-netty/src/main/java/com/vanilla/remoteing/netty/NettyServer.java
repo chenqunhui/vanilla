@@ -92,8 +92,8 @@ public  class NettyServer implements Server{
 							//pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
 							
 							//设置心跳读写超时时间
-							pipeline.addLast("pong", new IdleStateHandler(0, 0, conf.getTickTime(),TimeUnit.MILLISECONDS));
-							pipeline.addLast(new ServerHeartbeatListener(conf));
+							//pipeline.addLast("pong", new IdleStateHandler(0, 0, conf.getTickTime(),TimeUnit.MILLISECONDS));
+							//pipeline.addLast(new ServerHeartbeatListener(conf));
 							if(null != filterHandlerFactory && null != filterHandlerFactory.getFilters() && filterHandlerFactory.getFilters().size()>0){
 								List<ChannelInboundHandler> filters = filterHandlerFactory.getFilters();
 								for(int i=0;i<filters.size();i++){

@@ -1,5 +1,7 @@
 package com.vanilla.remoting;
 
+import com.vanilla.remoting.exchange.ResponseFuture;
+
 public interface Client {
 
 	void init();
@@ -8,5 +10,5 @@ public interface Client {
 	
 	void close();
 	
-	void send(Object msg);
+	ResponseFuture send(Object msg);
 }

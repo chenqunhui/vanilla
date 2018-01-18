@@ -14,7 +14,7 @@ public class PushServer {
 		Server  server = new NettyServer(NettyServerConfig.defaultConfig(),new HandlerFactory(){
 			@Override
 			public ChannelInboundHandler getObject() {
-				return new PushClientHandler();
+				return new PushServerHandler();
 			}
 		},null);
 		server.init();

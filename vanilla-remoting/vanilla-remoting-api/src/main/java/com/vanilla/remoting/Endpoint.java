@@ -16,7 +16,7 @@
  */
 package com.vanilla.remoting;
 
-import com.alibaba.dubbo.common.URL;
+import com.vanilla.common.URL;
 
 import java.net.InetSocketAddress;
 
@@ -24,9 +24,9 @@ import java.net.InetSocketAddress;
  * Endpoint. (API/SPI, Prototype, ThreadSafe)
  *
  *
- * @see com.alibaba.dubbo.remoting.Channel
- * @see com.alibaba.dubbo.remoting.Client
- * @see com.alibaba.dubbo.remoting.Server
+ * @see com.vanilla.remoting.Channel
+ * @see com.vanilla.remoting.Client
+ * @see com.vanilla.remoting.Server
  */
 public interface Endpoint {
 
