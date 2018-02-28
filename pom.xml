@@ -4,76 +4,204 @@
   <artifactId>vanilla</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
-  
   <modules>
   		<module>vanilla-common</module>
   		<module>vanilla-remoting</module>
-		<module>vanilla-client</module>
 		<module>vanilla-monitor</module>
 	</modules>
 	<properties>
-		<spring_version>4.3.10.RELEASE</spring_version>
-        <javassist_version>3.20.0-GA</javassist_version>
-        <netty_version>3.2.5.Final</netty_version>
-        <netty4_version>4.0.35.Final</netty4_version>
-        <mina_version>1.1.7</mina_version>
-        <grizzly_version>2.1.4</grizzly_version>
-        <httpclient_version>4.5.3</httpclient_version>
-        <hessian_lite_version>3.2.1-fixed-2</hessian_lite_version>
-        <xstream_version>1.4.1</xstream_version>
-        <fastjson_version>1.2.31</fastjson_version>
-        <bsf_version>3.1</bsf_version>
-        <sorcerer_version>0.8</sorcerer_version>
-        <zookeeper_version>3.4.9</zookeeper_version>
-        <zkclient_version>0.2</zkclient_version>
-        <curator_version>2.12.0</curator_version>
-        <jedis_version>2.9.0</jedis_version>
-        <xmemcached_version>1.3.6</xmemcached_version>
-        <cxf_version>3.0.14</cxf_version>
-        <thrift_version>0.8.0</thrift_version>
-        <jfreechart_version>1.0.13</jfreechart_version>
-        <hessian_version>4.0.38</hessian_version>
-        <servlet_version>2.5</servlet_version>
-        <jetty_version>6.1.26</jetty_version>
-        <validation_version>1.1.0.Final</validation_version>
-        <hibernate_validator_version>5.4.1.Final</hibernate_validator_version>
-        <jel_version>3.0.1-b08</jel_version>
-        <jcache_version>1.0.0</jcache_version>
-        <sca_version>2.0-M5.1</sca_version>
-        <guice_version>3.0</guice_version>
-        <cglib_version>2.2</cglib_version>
-        <webx_version>3.1.6</webx_version>
-        <velocity_version>1.7</velocity_version>
+		<spring.version>4.3.10.RELEASE</spring.version>
+        <javassist.version>3.20.0-GA</javassist.version>
+        <netty.version>4.0.35.Final</netty.version>
+        <mina.version>1.1.7</mina.version>
+        <grizzly.version>2.1.4</grizzly.version>
+        <httpclient.version>4.5.3</httpclient.version>
+        <hessian.lite.version>3.2.1-fixed-2</hessian.lite.version>
+        <xstream.version>1.4.1</xstream.version>
+        <fastjson.version>1.2.31</fastjson.version>
+        <bsf.version>3.1</bsf.version>
+        <sorcerer.version>0.8</sorcerer.version>
+        <zookeeper.version>3.4.9</zookeeper.version>
+        <zkclient.version>0.2</zkclient.version>
+        <curator.version>2.12.0</curator.version>
+        <jedis.version>2.9.0</jedis.version>
+        <xmemcached.version>1.3.6</xmemcached.version>
+        <cxf.version>3.0.14</cxf.version>
+        <thrift.version>0.8.0</thrift.version>
+        <jfreechart.version>1.0.13</jfreechart.version>
+        <hessian.version>4.0.38</hessian.version>
+        <servlet.version>2.5</servlet.version>
+        <jetty.version>6.1.26</jetty.version>
+        <validation.version>1.1.0.Final</validation.version>
+        <hibernate.validator.version>5.4.1.Final</hibernate.validator.version>
+        <jel.version>3.0.1-b08</jel.version>
+        <jcache.version>1.0.0</jcache.version>
+        <sca.version>2.0-M5.1</sca.version>
+        <guice.version>3.0</guice.version>
+        <cglib.version>2.2</cglib.version>
+        <webx.version>3.1.6</webx.version>
+        <velocity.version>1.7</velocity.version>
         <!-- Log libs -->
-        <slf4j_version>1.7.25</slf4j_version>
-        <jcl_version>1.2</jcl_version>
-        <log4j_version>1.2.16</log4j_version>
-        <logback_version>1.2.2</logback_version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <jcl.version>1.2</jcl.version>
+        <log4j.version>1.2.17</log4j.version>
+        <logback.version>1.2.2</logback.version>
         <!-- Test libs -->
-        <junit_version>4.12</junit_version>
-        <easymock_version>3.4</easymock_version>
-        <jmockit_version>1.33</jmockit_version>
+        <junit.version>4.12</junit.version>
+        <easymock.version>3.4</easymock.version>
+        <jmockit.version>1.33</jmockit.version>
+        <gson.version>2.3</gson.version>
         <!-- Build args -->
         <!-- <argline>-server -Xms64m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Dfile.encoding=UTF-8
             -Djava.net.preferIPv4Stack=true
         </argline> -->
-        <skip_maven_deploy>false</skip_maven_deploy>
+        <skip.maven.deploy>false</skip.maven.deploy>
         <updateReleaseInfo>true</updateReleaseInfo>
-        <project.build.sourceEncoding>${file_encoding}</project.build.sourceEncoding>
+        <file.encoding>UTF-8</file.encoding>
+        <project.build.sourceEncoding>${file.encoding}</project.build.sourceEncoding>
 
         <profile.name>oss</profile.name>
-
+		<aspectjweaver.version>1.6.8</aspectjweaver.version>
         <!-- for maven compiler plugin -->
-        <file_encoding>UTF-8</file_encoding>
+        
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.16.18</version>
-		</dependency>
-	</dependencies>
 	
+	<dependencyManagement>
+		<dependencies>
+	    	<dependency>
+			  <groupId>io.netty</groupId>
+			  <artifactId>netty-codec</artifactId>
+			  <version>${netty.version}</version>
+			</dependency>
+			<dependency>
+			  <groupId>io.netty</groupId>
+			  <artifactId>netty-handler</artifactId>
+			  <version>${netty.version}</version>
+			</dependency>
+			<!-- spring -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-webmvc</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-beans</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-context-support</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-tx</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
+			  <groupId>com.google.code.gson</groupId>
+			  <artifactId>gson</artifactId>
+			  <version>${gson.version}</version>
+			</dependency>
+			<dependency>
+			  <groupId>com.google.protobuf</groupId>
+			  <artifactId>protobuf-java</artifactId>
+			  <version>3.5.0</version>
+			</dependency>
+			<dependency>
+			  <groupId>com.caucho</groupId>
+			  <artifactId>hessian</artifactId>
+			  <version>4.0.38</version>
+			</dependency>
+			<dependency>
+	            <groupId>org.slf4j</groupId>
+	            <artifactId>slf4j-api</artifactId>
+	            <scope>provided</scope>
+	            <version>${slf4j.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>log4j</groupId>
+	            <artifactId>log4j</artifactId>
+	             <version>${log4j.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.javassist</groupId>
+	            <artifactId>javassist</artifactId>
+	            <version>${javassist.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.alibaba</groupId>
+	            <artifactId>hessian-lite</artifactId>
+	            <version>${hessian.lite.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>com.alibaba</groupId>
+	            <artifactId>fastjson</artifactId>
+	            <version>${fastjson.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>cglib</groupId>
+	            <artifactId>cglib-nodep</artifactId>
+	            <scope>test</scope>
+	            <version>${cglib.version}</version>
+	        </dependency>
+	        <dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.16.18</version>
+			</dependency>
+			 <dependency>
+	        	<artifactId>commons-logging</artifactId>
+				<groupId>commons-logging</groupId>
+				<version>1.1.3</version>
+	        </dependency>
+	        <dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>${aspectjweaver.version}</version>
+			</dependency>
+			<!-- 单元测试 -->
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-test</artifactId>
+				<version>${spring.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+			<!-- 单元测试 end -->
+			<dependency>
+				<groupId>joda-time</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>2.3</version>
+			</dependency>
+			<dependency>
+			  <groupId>com.github.sgroschupf</groupId>
+			  <artifactId>zkclient</artifactId>
+			  <version>0.1</version>
+			  <exclusions>
+			  	<exclusion>
+			  		<artifactId>log4j</artifactId>
+			  		<groupId>log4j</groupId>
+			  	</exclusion>
+			  </exclusions>
+			</dependency>
+	  </dependencies>
+	</dependencyManagement>
 	<build>
         <pluginManagement>
             <plugins>

@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>vanilla-monitor</artifactId>
-  <name>vanilla-remoting</name>
+  <name>vanilla-monitor</name>
   <url>http://maven.apache.org</url>
   <packaging>pom</packaging>
   

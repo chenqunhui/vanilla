@@ -13,119 +13,57 @@
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <netty.version>4.0.28.Final</netty.version>
-    <spring.version>3.2.10.RELEASE</spring.version>
-    <gson.version>2.3</gson.version>
-    <skip_maven_deploy>true</skip_maven_deploy>
-    <spring_version>4.3.10.RELEASE</spring_version>
-        <javassist_version>3.20.0-GA</javassist_version>
-       
-        <hessian_lite_version>3.2.1-fixed-2</hessian_lite_version>
-       
-        <fastjson_version>1.2.31</fastjson_version>
-  
-        <hessian_version>4.0.38</hessian_version>
-
-        <!-- Log libs -->
-        <slf4j_version>1.7.25</slf4j_version>
-
-        <log4j_version>1.2.16</log4j_version>
-        <cglib_version>2.2</cglib_version>
-
   </properties>
   <dependencies>
     	<dependency>
 		  <groupId>io.netty</groupId>
 		  <artifactId>netty-codec</artifactId>
-		  <version>${netty.version}</version>
 		</dependency>
 		<dependency>
 		  <groupId>io.netty</groupId>
 		  <artifactId>netty-handler</artifactId>
-		  <version>${netty.version}</version>
-		</dependency>
-		<dependency>
-		  <groupId>log4j</groupId>
-		  <artifactId>log4j</artifactId>
-		  <version>1.2.17</version>
-		</dependency>
-		<!-- spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-core</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-beans</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context-support</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-tx</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 		  <groupId>com.google.code.gson</groupId>
 		  <artifactId>gson</artifactId>
-		  <version>${gson.version}</version>
 		</dependency>
 		<dependency>
 		  <groupId>com.google.protobuf</groupId>
 		  <artifactId>protobuf-java</artifactId>
-		  <version>2.5.0</version>
 		</dependency>
 		<dependency>
 		  <groupId>com.caucho</groupId>
 		  <artifactId>hessian</artifactId>
-		  <version>4.0.38</version>
 		</dependency>
 		<dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <scope>provided</scope>
-            <version>${slf4j_version}</version>
         </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-             <version>${log4j_version}</version>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>${javassist_version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>hessian-lite</artifactId>
-            <version>${hessian_lite_version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>${fastjson_version}</version>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <scope>test</scope>
-            <version>${cglib_version}</version>
+        </dependency>
+        <dependency>
+        	<artifactId>commons-logging</artifactId>
+			<groupId>commons-logging</groupId>
         </dependency>
   </dependencies>
 </project>
