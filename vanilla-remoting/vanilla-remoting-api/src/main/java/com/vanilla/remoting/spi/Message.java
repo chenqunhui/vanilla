@@ -5,8 +5,8 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * 传输的消息类型需要实现该接口
- * @author chenqunhui
+ * 消息体
+ * @author cqh
  *
  */
 
@@ -14,8 +14,12 @@ import lombok.Data;
 public class Message implements Serializable{
 
 	private static final long serialVersionUID = -1830874220384347423L;
-	
+	private long id;
 	private int type;
 	
-	private String content;
+	private StringBuilder data;
+	
+	private long timestamp;
+	
+	private boolean completed;
 }

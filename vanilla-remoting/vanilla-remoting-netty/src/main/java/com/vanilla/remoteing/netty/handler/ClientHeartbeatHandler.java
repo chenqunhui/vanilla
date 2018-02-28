@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import com.vanilla.remoteing.netty.NettyClient;
 import com.vanilla.remoteing.netty.config.NettyClientConfig;
+import com.vanilla.remoting.Client;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -19,12 +20,16 @@ public class ClientHeartbeatHandler extends ChannelInboundHandlerAdapter {
 	
     private  NettyClientConfig config;  
     
-    private NettyClient client;
+    private Client client;
       
     private AtomicInteger currentCount = new AtomicInteger(0);  
     
-    public ClientHeartbeatHandler(NettyClient client){
-    	this.config = client.getConfig();
+    public Object getPingMsg(){
+    	return client.ping();
+    }
+    
+    public ClientHeartbeatHandler(NettyClientConfig config,Client client){
+    	this.config = config;
     	this.client = client;
     }
       
@@ -60,7 +65,7 @@ public class ClientHeartbeatHandler extends ChannelInboundHandlerAdapter {
                 	if(logger.isDebugEnabled()){
                 		logger.debug("Heartbeat send ping to server  "+ctx.channel().remoteAddress()+" : ping !");
                 	}
-                    ctx.channel().writeAndFlush("ping");  
+                    ctx.channel().writeAndFlush(getPingMsg());  
                 }else{
                 	//TRY_TIMES次心跳后服务端无响应则关闭链接；
                 	logger.error("Heartbeat has not get response from server for "+(count-1)+" times,close it!");
@@ -82,19 +87,15 @@ public class ClientHeartbeatHandler extends ChannelInboundHandlerAdapter {
   
     @Override  
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-    	String message = (String)msg;
-    	if(null != message){
-    		if (message.equals("pong")) {
-    			if(logger.isDebugEnabled()){
-    				logger.debug("Heartbeat response from server "+ctx.channel().localAddress()+" : pong !");
-    			}
-    			currentCount.set(0);
-            	ReferenceCountUtil.release(msg);
-            }else{
-            	ctx.fireChannelRead(msg);
-            	return;
-            }
-    	}
+    	if (client.isPong(msg)) {
+			if(logger.isDebugEnabled()){
+				logger.debug("Heartbeat response from server "+ctx.channel().remoteAddress()+" : pong !");
+			}
+			currentCount.set(0);
+        	ReferenceCountUtil.release(msg);
+        }else{
+        	ctx.fireChannelRead(msg);
+        }
     }  
     
     

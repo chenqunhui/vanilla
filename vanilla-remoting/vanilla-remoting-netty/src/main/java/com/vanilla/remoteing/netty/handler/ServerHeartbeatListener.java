@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 
 import com.vanilla.remoteing.netty.config.NettyServerConfig;
+import com.vanilla.remoting.Server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -24,8 +25,11 @@ public class ServerHeartbeatListener extends ChannelInboundHandlerAdapter {
 	
 	private NettyServerConfig serverConfig;
 	
-	public ServerHeartbeatListener(NettyServerConfig config){
+	private Server server;
+	
+	public ServerHeartbeatListener(NettyServerConfig config,Server server){
 		this.serverConfig = config;
+		this.server = server;
 	}
 	
 	@Override
@@ -52,17 +56,14 @@ public class ServerHeartbeatListener extends ChannelInboundHandlerAdapter {
 	
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		if(msg instanceof String){
-			String message = (String)msg;
-			if(message.equals("ping")){
-				if(logger.isDebugEnabled()){
-					logger.debug("Heartbeat request from client "+ctx.channel().remoteAddress()+" : ping !");
-				}
-				loss_connect_time.decrementAndGet();
-				ctx.writeAndFlush("pong");
-				return;
+		System.out.println("ServerHeartbeatListener开始处理");
+		if(server.isPing(msg)){
+			if(logger.isDebugEnabled()){
+				logger.debug("Heartbeat request from client "+ctx.channel().remoteAddress()+" : ping !");
 			}
-		}
+			loss_connect_time.decrementAndGet();
+			ctx.writeAndFlush(server.pong());
+		}	
 		ctx.fireChannelRead(msg);
     }
 	

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package="com.vanilla.monitor.beans.proto";
+option java_outer_classname ="MonitorLogProto";
+
+
+message MonitorLog{ 
+	string msgId = 1;
+	string level = 2;
+	string loggerName = 3;
+	string localAddress= 4; 
+	int64  timestamp =5;
+	string threadName =6;
+	string	msg =7;
+	int32  type=8;
+}

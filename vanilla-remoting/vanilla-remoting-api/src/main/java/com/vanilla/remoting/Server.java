@@ -10,4 +10,8 @@ public interface Server {
 	
 	void close();
 	boolean isClosed();
+	
+	boolean isPing(Object msg);
+	
+	Object pong();
 }

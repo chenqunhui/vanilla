@@ -1,10 +1,29 @@
-package com.vanilla.remoteing.netty;
+package com.vanilla.monitor;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
+
+import com.vanilla.monitor.beans.MonitorLogJava;
+import com.vanilla.monitor.beans.proto.MonitorLogProto;
+import com.vanilla.monitor.codec.MonitorLogCodec;
+import com.vanilla.monitor.handler.MonitorLogHandler;
+import com.vanilla.remoteing.netty.NettyServer;
+import com.vanilla.remoteing.netty.config.NettyServerConfig;
+import com.vanilla.remoteing.netty.handler.ServerHeartbeatListener;
+import com.vanilla.remoteing.netty.handler.ServerNettyConnectHolder;
+import com.vanilla.remoting.Server;
+import com.vanilla.remoting.spi.MessageType;
+import com.vanilla.remoting.spi.codec.hessian.HessianDecoder;
+import com.vanilla.remoting.spi.codec.hessian.HessianEncoder;
+import com.vanilla.remoting.spi.codec.protobuf.MessageProto;
+import com.vanilla.remoting.spi.codec.protobuf.ProtobufToMessageCodec;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
@@ -16,42 +35,30 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.bytes.ByteArrayEncoder;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
+import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
-import io.netty.util.CharsetUtil;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.log4j.Logger;
-
-import com.vanilla.remoteing.netty.config.NettyServerConfig;
-import com.vanilla.remoteing.netty.handler.ServerHeartbeatListener;
-import com.vanilla.remoteing.netty.handler.ServerNettyConnectHolder;
-import com.vanilla.remoting.Server;
-import com.vanilla.remoting.spi.codec.hessian.HessianDecoder;
-import com.vanilla.remoting.spi.codec.hessian.HessianEncoder;
-
-public  class NettyServer implements Server{
+public class MonitorServer implements Server{
 
 	private Logger logger = Logger.getLogger(NettyServer.class);
 	
 	private NettyServerConfig conf;
 	
-	private HandlerFactory handlerFactory;
-	
-	private FilterHandlerFactory  filterHandlerFactory;
-	
 	private boolean isStarted = false;
 	
 	private ServerBootstrap boot;
 	
+	public static void main(String[] args){
+		Server  server = new MonitorServer(NettyServerConfig.defaultConfig());
+		server.init();
+	}
 	
-	public NettyServer(NettyServerConfig conf, HandlerFactory handlerFactory,FilterHandlerFactory  filterFactory){
+	
+	public MonitorServer(NettyServerConfig conf){
 		this.conf = conf;
-		this.handlerFactory = handlerFactory;
-		this.filterHandlerFactory = filterFactory;
 	}
 	
 	public void init() {
@@ -80,27 +87,26 @@ public  class NettyServer implements Server{
 							ChannelPipeline pipeline = ch.pipeline();
 							pipeline.addLast("connect",new ServerNettyConnectHolder());
 							//Decoder
-							pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-							pipeline.addLast("byteDecoder",new ByteArrayDecoder());
-							pipeline.addLast("hessianDecoder",new HessianDecoder());
+//							pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+//							pipeline.addLast("byteDecoder",new ByteArrayDecoder());
+//							pipeline.addLast("hessianDecoder",new HessianDecoder());
 							//pipeline.addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
-							
+							pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
+							pipeline.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
+							pipeline.addLast("protobufDecoder",new ProtobufDecoder(MonitorLogProto.MonitorLog.getDefaultInstance()));
+							pipeline.addLast("protobufEncoder",new ProtobufEncoder());
+							//pipeline.addLast("codec",new ProtobufToMessageCodec());
+							pipeline.addLast("codec",new MonitorLogCodec());
 							//Encoder
-							pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
-							pipeline.addLast("byteEncoder",new ByteArrayEncoder());
-							pipeline.addLast("hessianEncoder",new HessianEncoder());
+//							pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
+//							pipeline.addLast("byteEncoder",new ByteArrayEncoder());
+//							pipeline.addLast("hessianEncoder",new HessianEncoder());
 							//pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
-							
 							//设置心跳读写超时时间
-							//pipeline.addLast("pong", new IdleStateHandler(0, 0, conf.getTickTime(),TimeUnit.MILLISECONDS));
-							//pipeline.addLast(new ServerHeartbeatListener(conf));
-							if(null != filterHandlerFactory && null != filterHandlerFactory.getFilters() && filterHandlerFactory.getFilters().size()>0){
-								List<ChannelInboundHandler> filters = filterHandlerFactory.getFilters();
-								for(int i=0;i<filters.size();i++){
-									pipeline.addLast("filter"+(i+1), filters.get(i));
-								}
-							}
-							pipeline.addLast("handler" ,handlerFactory.getObject());
+							pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, conf.getTickTime(),TimeUnit.MILLISECONDS));
+							pipeline.addLast(new ServerHeartbeatListener(conf,MonitorServer.this));
+							pipeline.addLast("handler" ,new MonitorLogHandler());
+							
 						}
 					});
 			ChannelFuture f = boot.bind(conf.getPort());
@@ -138,16 +144,27 @@ public  class NettyServer implements Server{
 		return false;
 	}
 
+
 	@Override
 	public boolean isPing(Object msg) {
-		// TODO Auto-generated method stub
-		return false;
+		if(msg instanceof MonitorLogJava){
+			MonitorLogJava log = (MonitorLogJava)msg;
+			if(log.getType() == MessageType.HEARTBEAT.getCode()){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
 	}
+
 
 	@Override
 	public Object pong() {
-		// TODO Auto-generated method stub
-		return null;
+		MonitorLogJava pong = new MonitorLogJava();
+		pong.setMsg("pong");
+		pong.setType(MessageType.HEARTBEAT_RESP.getCode());
+		return pong;
 	}
-
 }

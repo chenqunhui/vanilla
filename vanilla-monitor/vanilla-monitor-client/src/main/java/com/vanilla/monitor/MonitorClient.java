@@ -1,24 +1,27 @@
-package com.vanilla.remoteing.netty;
+package com.vanilla.monitor;
 
 import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
+import com.vanilla.monitor.beans.MonitorLogJava;
+import com.vanilla.monitor.beans.proto.MonitorLogProto;
+import com.vanilla.monitor.codec.MonitorLogCodec;
+import com.vanilla.remoteing.netty.FilterHandlerFactory;
+import com.vanilla.remoteing.netty.HandlerFactory;
+import com.vanilla.remoteing.netty.NettyClient;
 import com.vanilla.remoteing.netty.config.NettyClientConfig;
 import com.vanilla.remoteing.netty.handler.ClientHeartbeatHandler;
 import com.vanilla.remoting.Client;
-import com.vanilla.remoting.RemotingException;
 import com.vanilla.remoting.exception.UnConnectedException;
 import com.vanilla.remoting.exchange.Request;
 import com.vanilla.remoting.exchange.ResponseFuture;
 import com.vanilla.remoting.exchange.support.MyResponseFuture;
-import com.vanilla.remoting.spi.codec.hessian.HessianDecoder;
-import com.vanilla.remoting.spi.codec.hessian.HessianEncoder;
+import com.vanilla.remoting.spi.MessageType;
 import com.vanilla.remoting.spi.codec.protobuf.MessageProto;
 import com.vanilla.remoting.spi.codec.protobuf.ProtobufToMessageCodec;
 
@@ -32,17 +35,13 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import io.netty.handler.codec.LengthFieldPrepender;
-import io.netty.handler.codec.bytes.ByteArrayDecoder;
-import io.netty.handler.codec.bytes.ByteArrayEncoder;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32FrameDecoder;
 import io.netty.handler.codec.protobuf.ProtobufVarint32LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
 
-public  class NettyClient implements Client,Runnable {
+public class MonitorClient implements Client,Runnable {
 
 	private Logger logger= Logger.getLogger(NettyClient.class);
 	
@@ -56,11 +55,15 @@ public  class NettyClient implements Client,Runnable {
 	
 	private boolean isShutdown = false;
 	
-	private HandlerFactory handlerFactory;
-	
-	private FilterHandlerFactory  filterHandlerFactory;
-	
 	private Channel channel;
+	
+	
+	public static void main(String[] args){
+		new MonitorClient(NettyClientConfig.defaultConfig());
+	}
+	
+	
+	
 	//自动重连
 	private Thread thread = new Thread("NettyTcpClient-auto-reconnect-thread"){
 		public void run() {
@@ -83,10 +86,8 @@ public  class NettyClient implements Client,Runnable {
 		init();
 	}
 	
-	public NettyClient(NettyClientConfig conf,HandlerFactory handlerFactory,FilterHandlerFactory  filterHandlerFactory){
+	public MonitorClient(NettyClientConfig conf){
 		this.conf = conf;
-		this.handlerFactory = handlerFactory;
-		this.filterHandlerFactory = filterHandlerFactory;
 		new Thread(this).start();//异步初始化
 		try {
 			countDown.await();
@@ -126,11 +127,12 @@ public  class NettyClient implements Client,Runnable {
 				
 				pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
 				pipeline.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
-				pipeline.addLast("protobufDecoder",new ProtobufDecoder(MessageProto.Message.getDefaultInstance()));
+				pipeline.addLast("protobufDecoder",new ProtobufDecoder(MonitorLogProto.MonitorLog.getDefaultInstance()));
 				pipeline.addLast("protobufEncoder",new ProtobufEncoder());
-				pipeline.addLast("codec",new ProtobufToMessageCodec());
+				//pipeline.addLast("codec",new ProtobufToMessageCodec());
+				pipeline.addLast("codec",new MonitorLogCodec());
 				pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, 5,TimeUnit.SECONDS));
-				pipeline.addLast(new ClientHeartbeatHandler(conf,NettyClient.this));
+				pipeline.addLast(new ClientHeartbeatHandler(conf,MonitorClient.this));
 				//pipeline.addLast("handler" ,);
 			}
 		});
@@ -182,7 +184,7 @@ public  class NettyClient implements Client,Runnable {
 			throw new UnConnectedException("lost connect to "+ conf.getHost()+":"+conf.getPort());
 		}
 		ResponseFuture future = new MyResponseFuture(reqest, 3000);
-		ChannelFuture cf= channel.writeAndFlush(msg);
+		channel.writeAndFlush(msg);
 		return future;
 	}
 
@@ -201,17 +203,24 @@ public  class NettyClient implements Client,Runnable {
 	public NettyClientConfig getConfig(){
 		return conf;
 	}
-
-	@Override
-	public Object ping() {
-		// TODO Auto-generated method stub
-		return null;
+	
+	public Object ping(){
+		MonitorLogJava ping = new MonitorLogJava();
+		ping.setMsg("ping");
+		return ping;
 	}
-
-
-	@Override
-	public boolean isPong(Object pong) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	public boolean isPong(Object msg){
+		if(msg instanceof MonitorLogJava){
+			MonitorLogJava log = (MonitorLogJava)msg;
+			if(log.getType() == MessageType.HEARTBEAT_RESP.getCode()){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+		
 	}
 }
