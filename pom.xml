@@ -8,6 +8,7 @@
   		<module>vanilla-common</module>
   		<module>vanilla-remoting</module>
 		<module>vanilla-monitor</module>
+		<module>vanillas</module>
 	</modules>
 	<properties>
 		<spring.version>4.3.10.RELEASE</spring.version>
