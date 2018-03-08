@@ -214,4 +214,9 @@ public  class NettyClient implements Client,Runnable {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	public void sendAsync(Object msg, Request request) {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -112,6 +112,7 @@ public class MonitorServer implements Server{
 			ChannelFuture f = boot.bind(conf.getPort());
 			//f.addListener((GenericFutureListener<? extends Future<? super Void>>) new ServerFutureListener());
 			isStarted = true;
+			new Thread(new MonitorLogHandler()).start();//TODO处理异常消息
 			logger.info("push sever start success,listen on port "+conf.getPort());
 			f.channel().closeFuture().sync();
 		} catch (InterruptedException e) {

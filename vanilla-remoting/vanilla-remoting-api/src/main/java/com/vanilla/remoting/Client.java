@@ -1,7 +1,5 @@
 package com.vanilla.remoting;
 
-import com.vanilla.remoting.exchange.Request;
-import com.vanilla.remoting.exchange.ResponseFuture;
 
 public interface Client {
 
@@ -18,5 +16,4 @@ public interface Client {
 	Object ping();
 	boolean isPong(Object pong);
 	
-	ResponseFuture send(Object msg,Request request);
 }

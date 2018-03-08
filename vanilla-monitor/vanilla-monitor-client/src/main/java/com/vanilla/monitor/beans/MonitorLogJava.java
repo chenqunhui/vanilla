@@ -1,7 +1,10 @@
 package com.vanilla.monitor.beans;
 
+import com.alibaba.fastjson.JSON;
+
 public class MonitorLogJava {
 
+	private String appName="";
 	private String msgId="";
 	private String level="";
 	private String loggerName="";
@@ -17,6 +20,12 @@ public class MonitorLogJava {
 	
 	public int getType() {
 		return type;
+	}
+	public String getAppName() {
+		return appName;
+	}
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 	public void setType(int type) {
 		this.type = type;
@@ -64,6 +73,8 @@ public class MonitorLogJava {
 		this.msg = msg;
 	}
 	
-	
+	public String toString(){
+		return JSON.toJSONString(this);
+	}
 	
 }

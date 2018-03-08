@@ -56,7 +56,6 @@ public class ServerHeartbeatListener extends ChannelInboundHandlerAdapter {
 	
 	@Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-		System.out.println("ServerHeartbeatListener开始处理");
 		if(server.isPing(msg)){
 			if(logger.isDebugEnabled()){
 				logger.debug("Heartbeat request from client "+ctx.channel().remoteAddress()+" : ping !");
