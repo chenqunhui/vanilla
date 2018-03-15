@@ -1,5 +1,6 @@
 package com.vanilla.remoting;
 
+import com.vanilla.common.URL;
 
 public interface Client {
 
@@ -15,5 +16,7 @@ public interface Client {
 	
 	Object ping();
 	boolean isPong(Object pong);
+	
+	URL getSubscribeURL();    //服务端URL
 	
 }

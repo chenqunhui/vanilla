@@ -19,9 +19,9 @@ package com.vanilla.remoting.exchange.support;
 import com.vanilla.common.Constants;
 import com.vanilla.common.logger.Logger;
 import com.vanilla.common.logger.LoggerFactory;
-import com.vanilla.remoting.Channel;
 import com.vanilla.remoting.RemotingException;
 import com.vanilla.remoting.TimeoutException;
+import com.vanilla.remoting.channel.Channel;
 import com.vanilla.remoting.exchange.Request;
 import com.vanilla.remoting.exchange.Response;
 import com.vanilla.remoting.exchange.ResponseCallback;
@@ -57,7 +57,7 @@ public class DefaultFuture implements ResponseFuture {
     private final long id;
     private final Channel channel;
     private final Request request;
-    private final int timeout;
+    private final long timeout;
     private final Lock lock = new ReentrantLock();
     private final Condition done = lock.newCondition();
     private final long start = System.currentTimeMillis();
@@ -65,7 +65,7 @@ public class DefaultFuture implements ResponseFuture {
     private volatile Response response;
     private volatile ResponseCallback callback;
 
-    public DefaultFuture(Channel channel, Request request, int timeout) {
+    public DefaultFuture(Channel channel, Request request, long timeout) {
         this.channel = channel;
         this.request = request;
         this.id = request.getId();
@@ -74,6 +74,8 @@ public class DefaultFuture implements ResponseFuture {
         FUTURES.put(id, this);
         CHANNELS.put(id, channel);
     }
+    
+    
 
     public static DefaultFuture getFuture(long id) {
         return FUTURES.get(id);
@@ -91,27 +93,14 @@ public class DefaultFuture implements ResponseFuture {
     }
 
     public static void received(Channel channel, Response response) {
-        try {
-            DefaultFuture future = FUTURES.remove(response.getId());
-            if (future != null) {
-                future.doReceived(response);
-            } else {
-                logger.warn("The timeout response finally returned at "
-                        + (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()))
-                        + ", response " + response
-                        + (channel == null ? "" : ", channel: " + channel.getLocalAddress()
-                        + " -> " + channel.getRemoteAddress()));
-            }
-        } finally {
-            CHANNELS.remove(response.getId());
-        }
+       
     }
 
     public Object get() throws RemotingException {
         return get(timeout);
     }
 
-    public Object get(int timeout) throws RemotingException {
+    public Object get(long timeout) throws RemotingException {
         if (timeout <= 0) {
             timeout = Constants.DEFAULT_TIMEOUT;
         }
@@ -234,7 +223,7 @@ public class DefaultFuture implements ResponseFuture {
         return request;
     }
 
-    private int getTimeout() {
+    private long getTimeout() {
         return timeout;
     }
 

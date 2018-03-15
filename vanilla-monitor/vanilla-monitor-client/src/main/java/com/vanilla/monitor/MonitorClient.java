@@ -1,6 +1,7 @@
 package com.vanilla.monitor;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,9 +10,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
+import com.vanilla.cluster.LoadBalance;
+import com.vanilla.common.URL;
 import com.vanilla.monitor.beans.MonitorLogJava;
 import com.vanilla.monitor.beans.proto.MonitorLogProto;
 import com.vanilla.monitor.codec.MonitorLogCodec;
+import com.vanilla.register.Registry;
+import com.vanilla.register.RegistryFactory;
+import com.vanilla.register.integration.RegistryDirectory;
 import com.vanilla.remoteing.netty.NettyClient;
 import com.vanilla.remoteing.netty.config.NettyClientConfig;
 import com.vanilla.remoteing.netty.handler.ClientHeartbeatHandler;
@@ -19,8 +25,9 @@ import com.vanilla.remoting.Client;
 import com.vanilla.remoting.exception.UnConnectedException;
 import com.vanilla.remoting.exchange.Request;
 import com.vanilla.remoting.exchange.ResponseFuture;
-import com.vanilla.remoting.exchange.support.MyResponseFuture;
+import com.vanilla.remoting.exchange.support.DefaultResponseFuture;
 import com.vanilla.remoting.spi.MessageType;
+import com.vanilla.remoting.transport.AbstractChannel;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -52,8 +59,25 @@ public class MonitorClient implements Client, Runnable {
 	private boolean isShutdown = false;
 
 	private Channel channel;
+	
+	
 
 	private BlockingQueue<MonitorLogJava> queue = new LinkedBlockingQueue<MonitorLogJava>(1000);
+	
+	
+    private LoadBalance loadBalance;
+    
+    private AbstractChannel channelMananger;
+	
+	
+	
+	public MonitorClient(RegistryFactory RegistryFactory,URL url){
+		//TODO build subscribeUrl
+		this.registryFactory = RegistryFactory;
+		registryDirectory  = new RegistryDirectory(subscribeUrl); 
+		registry = registryFactory.getRegistry(url);
+		registry.subscribe(subscribeUrl, registryDirectory);
+	}
 
 	public static void main(String[] args) {
 		new MonitorClient(NettyClientConfig.defaultConfig());
@@ -250,7 +274,7 @@ public class MonitorClient implements Client, Runnable {
 			if (!isActive) {
 				throw new UnConnectedException("lost connect to " + conf.getHost() + ":" + conf.getPort());
 			}
-			ResponseFuture future = new MyResponseFuture(request, 3000);
+			ResponseFuture future = new DefaultResponseFuture(request, 3000);
 			channel.writeAndFlush(msg);
 			return future;
 		} catch (Exception e) {
@@ -266,5 +290,17 @@ public class MonitorClient implements Client, Runnable {
 			logger.error("send async monitor message error", e);
 		}
 
+	}
+
+	@Override
+	public URL getSubscribeURL() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private URL selectUrl(){
+		ArrayList<URL> list = new ArrayList<URL>();
+		list.addAll(registryDirectory.getCachedServerUrls());
+		return loadBalance.select(list, subscribeUrl);
 	}
 }

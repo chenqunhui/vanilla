@@ -18,13 +18,15 @@ package com.vanilla.remoting;
 
 import java.net.InetSocketAddress;
 
+import com.vanilla.remoting.channel.Channel;
+
 /**
  * RemotingException. (API, Prototype, ThreadSafe)
  *
  * @export
  * @see com.vanilla.remoting.exchange.ResponseFuture#get()
  * @see com.vanilla.remoting.exchange.ResponseFuture#get(int)
- * @see com.vanilla.remoting.Channel#send(Object, boolean)
+ * @see com.vanilla.remoting.channel.Channel#send(Object, boolean)
  * @see com.vanilla.remoting.exchange.ExchangeChannel#request(Object)
  * @see com.vanilla.remoting.exchange.ExchangeChannel#request(Object, int)
  * @see com.vanilla.remoting.Transporter#bind(com.vanilla.common.URL, ChannelHandler)

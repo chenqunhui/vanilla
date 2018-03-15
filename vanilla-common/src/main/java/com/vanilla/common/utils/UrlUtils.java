@@ -441,4 +441,8 @@ public class UrlUtils {
             return "*".equals(pattern) || pattern.equals(value);
         }
     }
+    
+    public static String getKey(URL url){
+    	return url.getIp()+":"+url.getPort();
+    }
 }

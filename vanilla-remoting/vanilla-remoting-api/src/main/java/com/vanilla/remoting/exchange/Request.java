@@ -18,14 +18,16 @@ package com.vanilla.remoting.exchange;
 
 import com.vanilla.common.utils.StringUtils;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Request.
  */
-public class Request {
+public class Request implements Serializable{
+	private static final long serialVersionUID = -5911385124396459521L;
 
-    public static final String HEARTBEAT_EVENT = null;
+	public static final String HEARTBEAT_EVENT = null;
 
     public static final String READONLY_EVENT = "R";
 
@@ -45,6 +47,11 @@ public class Request {
 
     public Request() {
         mId = newId();
+    }
+    
+    public Request(Object mData){
+    	this.mData = mData;
+    	mId = newId();
     }
 
     public Request(long id) {

@@ -8,6 +8,7 @@
   		<module>vanilla-common</module>
   		<module>vanilla-remoting</module>
 		<module>vanilla-monitor</module>
+		<module>vanilla-register</module>
 		<module>vanillas</module>
 	</modules>
 	<properties>
@@ -201,6 +202,11 @@
 			  	</exclusion>
 			  </exclusions>
 			</dependency>
+			<dependency>
+	            <groupId>org.apache.curator</groupId>
+	            <artifactId>curator-framework</artifactId>
+	            <version>${curator.version}</version>
+	        </dependency>
 	  </dependencies>
 	</dependencyManagement>
 	<build>

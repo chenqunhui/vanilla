@@ -16,7 +16,7 @@ import com.vanilla.remoting.RemotingException;
 import com.vanilla.remoting.exception.UnConnectedException;
 import com.vanilla.remoting.exchange.Request;
 import com.vanilla.remoting.exchange.ResponseFuture;
-import com.vanilla.remoting.exchange.support.MyResponseFuture;
+import com.vanilla.remoting.exchange.support.DefaultResponseFuture;
 import com.vanilla.remoting.spi.codec.hessian.HessianDecoder;
 import com.vanilla.remoting.spi.codec.hessian.HessianEncoder;
 import com.vanilla.remoting.spi.codec.protobuf.MessageProto;
@@ -181,7 +181,7 @@ public  class NettyClient implements Client,Runnable {
 		if(!isActive){
 			throw new UnConnectedException("lost connect to "+ conf.getHost()+":"+conf.getPort());
 		}
-		ResponseFuture future = new MyResponseFuture(reqest, 3000);
+		ResponseFuture future = new DefaultResponseFuture(reqest, 3000);
 		ChannelFuture cf= channel.writeAndFlush(msg);
 		return future;
 	}

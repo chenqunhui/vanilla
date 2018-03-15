@@ -20,7 +20,6 @@ import com.vanilla.common.Constants;
 import com.vanilla.common.URL;
 import com.vanilla.common.logger.Logger;
 import com.vanilla.common.logger.LoggerFactory;
-import com.vanilla.remoting.ChannelHandler;
 import com.vanilla.remoting.RemotingException;
 import com.vanilla.remoting.transport.AbstractChannel;
 
@@ -45,21 +44,21 @@ final class NettyChannel extends AbstractChannel {
 
     private final Map<String, Object> attributes = new ConcurrentHashMap<String, Object>();
 
-    private NettyChannel(Channel channel, URL url, ChannelHandler handler) {
-        super(url, handler);
+    private NettyChannel(Channel channel, URL url) {
+        super(url);
         if (channel == null) {
             throw new IllegalArgumentException("netty channel == null;");
         }
         this.channel = channel;
     }
 
-    static NettyChannel getOrAddChannel(Channel ch, URL url, ChannelHandler handler) {
+    static NettyChannel getOrAddChannel(Channel ch, URL url) {
         if (ch == null) {
             return null;
         }
         NettyChannel ret = channelMap.get(ch);
         if (ret == null) {
-            NettyChannel nettyChannel = new NettyChannel(ch, url, handler);
+            NettyChannel nettyChannel = new NettyChannel(ch, url);
             if (ch.isActive()) {
                 ret = channelMap.putIfAbsent(ch, nettyChannel);
             }
@@ -183,5 +182,16 @@ final class NettyChannel extends AbstractChannel {
     public String toString() {
         return "NettyChannel [channel=" + channel + "]";
     }
+
+	@Override
+	public boolean doConnect() {
+		return true;
+	}
+
+
+	@Override
+	public void send(Object message) {
+		channel.writeAndFlush(message);
+	}
 
 }

@@ -17,17 +17,20 @@
 package com.vanilla.remoting.transport;
 
 import com.vanilla.common.URL;
-import com.vanilla.remoting.Channel;
-import com.vanilla.remoting.ChannelHandler;
 import com.vanilla.remoting.RemotingException;
+import com.vanilla.remoting.channel.Channel;
 
 /**
  * AbstractChannel
  */
-public abstract class AbstractChannel extends AbstractPeer implements Channel {
+public abstract class AbstractChannel  implements Channel {
 
-    public AbstractChannel(URL url, ChannelHandler handler) {
-        super(url, handler);
+	private final URL url;
+	private volatile boolean isClosed = false;
+	
+	
+    public AbstractChannel(URL url) {
+       this.url = url;
     }
 
     public void send(Object message, boolean sent) throws RemotingException {
@@ -43,4 +46,16 @@ public abstract class AbstractChannel extends AbstractPeer implements Channel {
         return getLocalAddress() + " -> " + getRemoteAddress();
     }
 
+    public URL getUrl(){
+    	return url;
+    }
+    
+    public void close(){
+    	isClosed = true;
+    }
+
+	@Override
+	public boolean isClosed() {
+		return isClosed;
+	}
 }

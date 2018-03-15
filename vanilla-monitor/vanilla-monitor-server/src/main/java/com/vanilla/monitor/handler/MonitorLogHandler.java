@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.log4j.Logger;
 
 import com.vanilla.monitor.beans.MonitorLogJava;
+import com.vanilla.remoting.exchange.Request;
+import com.vanilla.remoting.exchange.Response;
 import com.vanilla.remoting.spi.Message;
 import com.vanilla.remoting.spi.MessageType;
 
@@ -34,6 +36,13 @@ public class MonitorLogHandler extends ChannelInboundHandlerAdapter implements R
             	logger.error("queue is full...");
             }
             return ;
+    	}
+    	if(msg instanceof Request){
+    		Request req = (Request)msg;
+    		System.out.println("get request id="+req.getId()+" time ="+req.getData().toString());
+    		Response resp = new Response(req.getId());
+    		resp.setResult("receive "+ req.getData().toString());
+    		ctx.writeAndFlush(resp);
     	}
         ctx.fireChannelRead(msg);
     }

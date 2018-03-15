@@ -17,8 +17,8 @@
 package com.vanilla.remoting.telnet;
 
 import com.vanilla.common.extension.SPI;
-import com.vanilla.remoting.Channel;
 import com.vanilla.remoting.RemotingException;
+import com.vanilla.remoting.channel.Channel;
 
 /**
  * TelnetHandler

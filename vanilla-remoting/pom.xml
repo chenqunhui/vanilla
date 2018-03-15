@@ -16,5 +16,6 @@
     <modules>
   		<module>vanilla-remoting-api</module>
   		<module>vanilla-remoting-netty</module>
+  		<module>vanilla-remoting-zookeeper</module>
 	</modules>
 </project>

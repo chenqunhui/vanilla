@@ -10,7 +10,7 @@ public class NettyServerConfig {
 
 	public static NettyServerConfig defaultConfig(){
 		NettyServerConfig conf = new NettyServerConfig();
-		conf.port=21881;
+		conf.port=20881;
 		conf.bossGroup = 2;
 		conf.workerGroup = 2;
 		conf.tickTime = 30*1000;

@@ -17,14 +17,7 @@ public interface ResponseFuture {
      * @param timeoutInMillis timeout.
      * @return result.
      */
-    Object get(int timeoutInMillis) throws RemotingException;
-
-    /**
-     * set callback.
-     *
-     * @param callback
-     */
-    void setCallback(ResponseCallback callback);
+    Object get(long timeoutInMillis) throws RemotingException;
 
     /**
      * check is done.
@@ -32,4 +25,5 @@ public interface ResponseFuture {
      * @return done or not.
      */
     boolean isDone();
+    
 }

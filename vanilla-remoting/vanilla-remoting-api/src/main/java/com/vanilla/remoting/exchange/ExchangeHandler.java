@@ -16,14 +16,13 @@
  */
 package com.vanilla.remoting.exchange;
 
-import com.vanilla.remoting.ChannelHandler;
 import com.vanilla.remoting.RemotingException;
 import com.vanilla.remoting.telnet.TelnetHandler;
 
 /**
  * ExchangeHandler. (API, Prototype, ThreadSafe)
  */
-public interface ExchangeHandler extends ChannelHandler, TelnetHandler {
+public interface ExchangeHandler extends TelnetHandler {
 
     /**
      * reply.

@@ -18,6 +18,8 @@ package com.vanilla.remoting;
 
 import java.net.InetSocketAddress;
 
+import com.vanilla.remoting.channel.Channel;
+
 /**
  * ReceiveException
  *

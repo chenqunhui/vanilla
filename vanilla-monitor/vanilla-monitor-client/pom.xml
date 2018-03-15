@@ -45,6 +45,10 @@
 		  		<artifactId>log4j</artifactId>
 		  		<groupId>log4j</groupId>
 		  	</exclusion>
+		  	<exclusion>
+		  		<artifactId>zookeeper</artifactId>
+		  		<groupId>org.apache.zookeeper</groupId>
+		  	</exclusion>
 		  </exclusions>
 		</dependency>
 		<dependency>
@@ -76,6 +80,16 @@
 		<dependency>
 			<groupId>com.vanilla</groupId>
 		  	<artifactId>vanilla-remoting-netty</artifactId>
+		  <version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vanilla</groupId>
+		  	<artifactId>vanilla-register-api</artifactId>
+		  <version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.vanilla</groupId>
+		  	<artifactId>vanilla-register-zookeeper</artifactId>
 		  <version>${project.parent.version}</version>
 		</dependency>
 	</dependencies>

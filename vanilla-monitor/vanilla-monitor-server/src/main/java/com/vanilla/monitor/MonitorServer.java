@@ -5,10 +5,14 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
+import com.vanilla.common.URL;
 import com.vanilla.monitor.beans.MonitorLogJava;
 import com.vanilla.monitor.beans.proto.MonitorLogProto;
 import com.vanilla.monitor.codec.MonitorLogCodec;
 import com.vanilla.monitor.handler.MonitorLogHandler;
+import com.vanilla.monitor.support.DefaultRegistryFactory;
+import com.vanilla.register.Registry;
+import com.vanilla.register.RegistryFactory;
 import com.vanilla.remoteing.netty.NettyServer;
 import com.vanilla.remoteing.netty.config.NettyServerConfig;
 import com.vanilla.remoteing.netty.handler.ServerHeartbeatListener;
@@ -43,16 +47,25 @@ import io.netty.handler.timeout.IdleStateHandler;
 
 public class MonitorServer implements Server{
 
+	
 	private Logger logger = Logger.getLogger(NettyServer.class);
 	
 	private NettyServerConfig conf;
 	
 	private boolean isStarted = false;
 	
+	private URL subscribeUrl= new URL("zookeeper","monitor",2181);
+	
 	private ServerBootstrap boot;
 	
 	public static void main(String[] args){
-		Server  server = new MonitorServer(NettyServerConfig.defaultConfig());
+		NettyServerConfig config = NettyServerConfig.defaultConfig();
+		config.setPort(21885);
+		Server  server = new MonitorServer(config);
+		RegistryFactory registryFactory = new DefaultRegistryFactory();
+		URL registerUrl = new URL("zookeeper","127.0.0.1",2181);
+		Registry registry = registryFactory.getRegistry(registerUrl);
+		registry.register(new URL("netty4","monitor2181"+"/127.0.0.1",config.getPort()));
 		server.init();
 	}
 	
@@ -87,24 +100,24 @@ public class MonitorServer implements Server{
 							ChannelPipeline pipeline = ch.pipeline();
 							pipeline.addLast("connect",new ServerNettyConnectHolder());
 							//Decoder
-//							pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
-//							pipeline.addLast("byteDecoder",new ByteArrayDecoder());
-//							pipeline.addLast("hessianDecoder",new HessianDecoder());
+							pipeline.addLast("frameDecoder",new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+							pipeline.addLast("byteDecoder",new ByteArrayDecoder());
+							pipeline.addLast("hessianDecoder",new HessianDecoder());
 							//pipeline.addLast("decoder", new StringDecoder(CharsetUtil.UTF_8));
-							pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
-							pipeline.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
-							pipeline.addLast("protobufDecoder",new ProtobufDecoder(MonitorLogProto.MonitorLog.getDefaultInstance()));
-							pipeline.addLast("protobufEncoder",new ProtobufEncoder());
+//							pipeline.addLast("frameDecoder", new ProtobufVarint32FrameDecoder());
+//							pipeline.addLast("frameEncoder", new ProtobufVarint32LengthFieldPrepender());
+//							pipeline.addLast("protobufDecoder",new ProtobufDecoder(MonitorLogProto.MonitorLog.getDefaultInstance()));
+//							pipeline.addLast("protobufEncoder",new ProtobufEncoder());
 							//pipeline.addLast("codec",new ProtobufToMessageCodec());
-							pipeline.addLast("codec",new MonitorLogCodec());
+							//pipeline.addLast("codec",new MonitorLogCodec());
 							//Encoder
-//							pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
-//							pipeline.addLast("byteEncoder",new ByteArrayEncoder());
-//							pipeline.addLast("hessianEncoder",new HessianEncoder());
+							pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
+							pipeline.addLast("byteEncoder",new ByteArrayEncoder());
+							pipeline.addLast("hessianEncoder",new HessianEncoder());
 							//pipeline.addLast("encoder", new StringEncoder(CharsetUtil.UTF_8));
 							//设置心跳读写超时时间
-							pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, conf.getTickTime(),TimeUnit.MILLISECONDS));
-							pipeline.addLast(new ServerHeartbeatListener(conf,MonitorServer.this));
+							//pipeline.addLast("heartbeat", new IdleStateHandler(0, 0, conf.getTickTime(),TimeUnit.MILLISECONDS));
+							//pipeline.addLast(new ServerHeartbeatListener(conf,MonitorServer.this));
 							pipeline.addLast("handler" ,new MonitorLogHandler());
 							
 						}
