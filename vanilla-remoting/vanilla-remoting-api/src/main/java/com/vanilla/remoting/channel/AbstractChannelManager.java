@@ -18,27 +18,27 @@ public abstract class AbstractChannelManager implements ChannelManager{
 	//protected abstract void removeChannel(Channel channel);
 	
 	@Override
-	public ResponseFuture send(Request message) throws RemotingException {
+	public ResponseFuture send(Object message) throws RemotingException {
 		return send(message,Constants.DEFAULT_TIMEOUT);
 	}
 
-	@Override
-	public ResponseFuture send(Request reuqest, long timeout) throws RemotingException {
-		Channel channel = selectChannel();
-		if(null == channel){
-			throw new RemotingException(null ,"no channel can be used !");
-		}
-		DefaultResponseFuture future = new DefaultResponseFuture(channel,reuqest,timeout);
-		future.doSent();
-		return future;
-	}
-
-	@Override
-	public void asyncSend(Request reuqest, ResponseCallback callback) throws RemotingException{
-		Channel channel = selectChannel();
-		if(null == channel){
-			throw new RemotingException(null ,"no channel can be used !");
-		}
-		new  DefaultResponseFuture(channel,reuqest,callback).doSent();
-	}
+//	@Override //留给RPC去实现
+//	public ResponseFuture send(Object reuqest, long timeout) throws RemotingException {
+//		Channel channel = selectChannel();
+//		if(null == channel){
+//			throw new RemotingException(null ,"no channel can be used !");
+//		}
+//		DefaultResponseFuture future = new DefaultResponseFuture(channel,reuqest,timeout);
+//		future.doSent();
+//		return future;
+//	}
+//
+//	@Override
+//	public void asyncSend(Request reuqest, ResponseCallback callback) throws RemotingException{
+//		Channel channel = selectChannel();
+//		if(null == channel){
+//			throw new RemotingException(null ,"no channel can be used !");
+//		}
+//		new  DefaultResponseFuture(channel,reuqest,callback).doSent();
+//	}
 }

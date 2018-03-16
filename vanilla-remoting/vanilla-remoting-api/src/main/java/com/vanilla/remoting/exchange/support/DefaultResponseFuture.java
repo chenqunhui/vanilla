@@ -202,9 +202,5 @@ public class DefaultResponseFuture implements ResponseFuture {
         }
     }
 
-    public void doSent(){
-    	channel.send(request);
-    	sent = System.currentTimeMillis();
-    }
 
 }

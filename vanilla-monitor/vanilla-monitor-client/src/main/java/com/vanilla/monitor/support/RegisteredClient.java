@@ -1,6 +1,5 @@
 package com.vanilla.monitor.support;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -14,27 +13,25 @@ import com.vanilla.common.URL;
 import com.vanilla.register.NotifyListener;
 import com.vanilla.register.Registry;
 import com.vanilla.register.RegistryFactory;
-import com.vanilla.remoteing.netty.NettyChannelManager;
-import com.vanilla.remoting.RemotingException;
 import com.vanilla.remoting.channel.ChannelManager;
 
-public class RegisteredClient extends LoadbalanceClient implements NotifyListener{
+public abstract class RegisteredClient extends LoadbalanceClient implements NotifyListener{
 
 	private static Logger logger = Logger.getLogger(RegisteredClient.class);
-	private URL subscribeUrl= new URL("zookeeper","monitor",2181);
+	private URL subscribeUrl= new URL("zookeeper","monitor",2181);//对于monitor而且，默认为monitor,所以这里无意义，但不能为空
 	private Registry registry;
 	private RegistryFactory registryFactory = new DefaultRegistryFactory();;
 
 	
-	public RegisteredClient(URL registryUrl,ChannelManager channelManager, LoadBalance loadBalance) {
-		super(channelManager, loadBalance);
+	public RegisteredClient(URL registryUrl,ChannelManager channelManager,LoadBalance loadBalance) {
+		super(channelManager,loadBalance);
 		registry = registryFactory.getRegistry(registryUrl);
 		registry.subscribe(subscribeUrl, this);
 	}
 
 	
 	public RegisteredClient(URL registryUrl,ChannelManager channelManager){
-		super(channelManager, null);
+		super(channelManager,null);
 		registry = registryFactory.getRegistry(registryUrl);
 		registry.subscribe(subscribeUrl, this);
 	}
@@ -44,33 +41,32 @@ public class RegisteredClient extends LoadbalanceClient implements NotifyListene
 		if(logger.isDebugEnabled()){
 			logger.debug("notify url is ["+JSON.toJSONString(urls)+"]");
 		}
-		if(null == urls || urls.isEmpty()){
-			return;
-		}
 		Set<URL> caches = new HashSet<URL>();
-		caches.addAll(urls);
+		if(null != urls && !urls.isEmpty()){
+			caches.addAll(urls);
+		}
 		this.setServerURLs(caches);
 	}
 	
-	
-	public static void main(String[] args){
-		URL registerUrl = new URL("zookeeper","127.0.0.1",2181);
-		RegisteredClient client = new RegisteredClient(registerUrl,new NettyChannelManager());
-		while(true){
-			try {
-				client.send("now is "+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-				
-			} catch (RemotingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
+//	
+//	public static void main(String[] args){
+//		URL registerUrl = new URL("zookeeper","127.0.0.1",2181);
+//		RegisteredClient client = new RegisteredClient(registerUrl,new NettyChannelManager());
+//		while(true){
+//			try {
+//				client.send("now is "+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+//				
+//			} catch (RemotingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			try {
+//				Thread.sleep(3000);
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 
 }

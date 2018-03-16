@@ -19,7 +19,6 @@ public class MonitorLogCodec extends MessageToMessageCodec<MonitorLogProto.Monit
 	protected void encode(ChannelHandlerContext ctx, MonitorLogJava log, List<Object> out) throws Exception {
 		System.out.println("MonitorLogCodec encode开始处理");
 		MonitorLogProto.MonitorLog.Builder builder = MonitorLogProto.MonitorLog.newBuilder();
-		builder.setLevel(log.getLevel());
 		builder.setLocalAddress(log.getLocalAddress());
 		builder.setLoggerName(log.getLoggerName());
 		builder.setMsg(log.getMsg());
@@ -34,7 +33,6 @@ public class MonitorLogCodec extends MessageToMessageCodec<MonitorLogProto.Monit
 	protected void decode(ChannelHandlerContext ctx, MonitorLog msg, List<Object> out) throws Exception {
 		System.out.println("MonitorLogCodec decode开始处理");
 		MonitorLogJava log = new MonitorLogJava();
-		log.setLevel(msg.getLevel());
 		log.setLocalAddress(msg.getLocalAddress());
 		log.setLoggerName(msg.getLoggerName());
 		log.setMsg(msg.getMsg());

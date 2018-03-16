@@ -27,6 +27,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -190,8 +191,25 @@ final class NettyChannel extends AbstractChannel {
 
 
 	@Override
-	public void send(Object message) {
-		channel.writeAndFlush(message);
+	public void send(Object message,long timeout) throws RemotingException{
+		 boolean success = true;
+        try {
+            ChannelFuture future = channel.writeAndFlush(message);
+            success = future.await(timeout);
+            Throwable cause = future.cause();
+            if (cause != null) {
+                throw cause;
+            }
+        } catch (Throwable e) {
+            throw new RemotingException(this, "Failed to send message " + message + " to " + getRemoteAddress() + ", cause: " + e.getMessage(), e);
+        }
+        if (!success) {
+            throw new RemotingException(this, "Failed to send message " + message + " to " + getRemoteAddress()
+                    + "in timeout(" + timeout + "ms) limit");
+        }
 	}
 
+	public static Collection<NettyChannel> getExistsChannel(){
+		return channelMap.values();
+	}
 }

@@ -54,18 +54,16 @@ public class MonitorServer implements Server{
 	
 	private boolean isStarted = false;
 	
-	private URL subscribeUrl= new URL("zookeeper","monitor",2181);
-	
 	private ServerBootstrap boot;
 	
 	public static void main(String[] args){
 		NettyServerConfig config = NettyServerConfig.defaultConfig();
-		config.setPort(21885);
+		config.setPort(21886);
 		Server  server = new MonitorServer(config);
 		RegistryFactory registryFactory = new DefaultRegistryFactory();
 		URL registerUrl = new URL("zookeeper","127.0.0.1",2181);
 		Registry registry = registryFactory.getRegistry(registerUrl);
-		registry.register(new URL("netty4","monitor2181"+"/127.0.0.1",config.getPort()));
+		registry.register(new URL("netty4","127.0.0.1",config.getPort()));
 		server.init();
 	}
 	

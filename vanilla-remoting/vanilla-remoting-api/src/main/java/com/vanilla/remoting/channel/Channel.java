@@ -19,6 +19,7 @@ package com.vanilla.remoting.channel;
 import java.net.InetSocketAddress;
 
 import com.vanilla.common.URL;
+import com.vanilla.remoting.RemotingException;
 import com.vanilla.remoting.exchange.Exchange;
 import com.vanilla.remoting.exchange.Request;
 
@@ -110,5 +111,5 @@ public interface Channel{
 	 */
 	boolean isClosed();
 
-	void send(Object message);
+	void send(Object message,long timeout) throws RemotingException;
 }

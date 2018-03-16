@@ -6,7 +6,6 @@ public class MonitorLogJava {
 
 	private String appName="";
 	private String msgId="";
-	private String level="";
 	private String loggerName="";
 	private String localAddress="";
 	private Long timestamp=0l;
@@ -35,12 +34,6 @@ public class MonitorLogJava {
 	}
 	public void setMsgId(String msgId) {
 		this.msgId = msgId;
-	}
-	public String getLevel() {
-		return level;
-	}
-	public void setLevel(String level) {
-		this.level = level;
 	}
 	public String getLoggerName() {
 		return loggerName;

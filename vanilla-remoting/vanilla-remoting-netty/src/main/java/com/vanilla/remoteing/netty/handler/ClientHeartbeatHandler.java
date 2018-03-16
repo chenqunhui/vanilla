@@ -4,7 +4,6 @@ package com.vanilla.remoteing.netty.handler;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
-import com.vanilla.remoteing.netty.NettyClient;
 import com.vanilla.remoteing.netty.config.NettyClientConfig;
 import com.vanilla.remoting.Client;
 

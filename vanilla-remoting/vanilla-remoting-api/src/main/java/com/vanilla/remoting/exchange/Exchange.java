@@ -11,9 +11,9 @@ import com.vanilla.remoting.channel.Channel;
  */
 public interface Exchange {
 
-	ResponseFuture send(Request request) throws RemotingException;
+	ResponseFuture send(Object request) throws RemotingException;
 	
-	ResponseFuture send(Request request,long timeoutInMillis) throws RemotingException;
+	ResponseFuture send(Object request,long timeoutInMillis) throws RemotingException;
 	
-	void asyncSend(Request request,ResponseCallback callback) throws RemotingException;
+	void asyncSend(Object request,ResponseCallback callback) throws RemotingException;
 }
