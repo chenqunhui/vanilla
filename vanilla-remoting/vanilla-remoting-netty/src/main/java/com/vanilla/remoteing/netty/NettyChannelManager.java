@@ -73,7 +73,7 @@ public class NettyChannelManager extends AutoAckChannelManager{
 	@Override
 	public com.vanilla.remoting.channel.Channel createChannel(URL url) {
 		ChannelFuture future = m_bootstrap.connect(url.getHost(),url.getPort());
-		future.awaitUninterruptibly(1000, TimeUnit.MILLISECONDS); // 100ms
+		future.awaitUninterruptibly(1000, TimeUnit.MILLISECONDS); // 1000ms
 		if (!future.isSuccess()) {
 			logger.error("try connect to " + url.getHost() + ":" + url.getPort() + " error!");
 			future.channel().close();

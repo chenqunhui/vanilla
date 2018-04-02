@@ -5,13 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.vanilla</groupId>
-		<artifactId>vanilla-monitor</artifactId>
+		<artifactId>vanilla-rpc</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>vanilla-monitor-client</artifactId>
+	<artifactId>vanilla-rpc-thrift</artifactId>
 	<packaging>jar</packaging>
-	<name>vanilla-monitor-client</name>
+	<name>vanilla-rpc-api</name>
 	<url>http://maven.apache.org</url>
 
 	<dependencies>
@@ -93,9 +93,50 @@
 		  <version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>com.vanilla</groupId>
+		  	<artifactId>vanilla-rpc-api</artifactId>
+		  <version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
             <groupId>com.netflix.hystrix</groupId>
             <artifactId>hystrix-core</artifactId>
             <version>${hystrix.version}</version>
         </dependency>
+        <dependency>
+        	<artifactId>libthrift</artifactId>
+            <groupId>org.apache.thrift</groupId>
+            <version>0.10.0</version>
+        </dependency>
+        <dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>${commons-pool.version}</version>
+        </dependency>
+    
+		<!-- spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
 	</dependencies>
 </project>

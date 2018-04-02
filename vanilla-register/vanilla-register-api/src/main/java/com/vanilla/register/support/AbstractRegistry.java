@@ -19,7 +19,7 @@ public abstract class AbstractRegistry implements Registry {
         return registryUrl;
     }
 
-    protected void setUrl(URL url) {
+    public void setUrl(URL url) {
         if (url == null) {
             throw new IllegalArgumentException("registry url == null");
         }

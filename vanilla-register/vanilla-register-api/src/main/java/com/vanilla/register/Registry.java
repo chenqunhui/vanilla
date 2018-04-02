@@ -4,6 +4,10 @@ import com.vanilla.common.URL;
 
 public interface Registry {
 
+	URL getUrl();
+	
+	void setUrl(URL url);
+	
 	void register(URL url);
 	
 	void unregister(URL url);

@@ -9,6 +9,7 @@
   		<module>vanilla-remoting</module>
 		<module>vanilla-monitor</module>
 		<module>vanilla-register</module>
+		<module>vanilla-rpc</module>
 		<module>vanillas</module>
 	</modules>
 	<properties>
@@ -53,10 +54,12 @@
         <easymock.version>3.4</easymock.version>
         <jmockit.version>1.33</jmockit.version>
         <gson.version>2.3</gson.version>
+        <commons-pool.version>1.6</commons-pool.version>
         <!-- Build args -->
         <!-- <argline>-server -Xms64m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -Dfile.encoding=UTF-8
             -Djava.net.preferIPv4Stack=true
         </argline> -->
+        <hystrix.version>1.5.12</hystrix.version>
         <skip.maven.deploy>false</skip.maven.deploy>
         <updateReleaseInfo>true</updateReleaseInfo>
         <file.encoding>UTF-8</file.encoding>

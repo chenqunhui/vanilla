@@ -5,13 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.vanilla</groupId>
-		<artifactId>vanilla-monitor</artifactId>
+		<artifactId>vanilla-rpc</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>vanilla-monitor-client</artifactId>
+	<artifactId>vanilla-rpc-api</artifactId>
 	<packaging>jar</packaging>
-	<name>vanilla-monitor-client</name>
+	<name>vanilla-rpc-api</name>
 	<url>http://maven.apache.org</url>
 
 	<dependencies>
@@ -68,6 +68,11 @@
 		  <artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>${commons-pool.version}</version>
+        </dependency>
+		<dependency>
 		  <groupId>com.vanilla</groupId>
 		  <artifactId>vanilla-common</artifactId>
 		  <version>${project.parent.version}</version>
@@ -97,5 +102,29 @@
             <artifactId>hystrix-core</artifactId>
             <version>${hystrix.version}</version>
         </dependency>
+        <dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+		</dependency>
+				<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
 	</dependencies>
 </project>
